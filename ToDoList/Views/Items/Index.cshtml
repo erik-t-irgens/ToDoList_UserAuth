@@ -1,0 +1,11 @@
+@using ToDoList.Models;
+
+<h1>To Do List</h1>
+<ul>
+@for(int i=0; i<Model.Count; i++)
+{
+    <li>@Model[i].Description</li>
+
+}
+</ul>
+<a href="/items/new">Add a new item.</a>
