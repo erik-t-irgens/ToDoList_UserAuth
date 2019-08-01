@@ -13,9 +13,9 @@ namespace ToDoList
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddEnvironmentVariables();
-            Configuration= builder.Build();
+            Configuration = builder.Build();
         }
-        public IConfigurationRoot Configuration {get; }
+        public IConfigurationRoot Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
@@ -26,13 +26,18 @@ namespace ToDoList
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name:"default",
-                    template:"{controller=Home}/{action=Index}/{id}");
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id}");
             });
+
+            // THIS LINE MAKES IT SO WE CAN USE STATIC FILES, SUCH AS STYLES.CSS
+            app.UseStaticFiles();
             app.Run(async (context) =>
             {
                 await context.Response.WriteAsync("something went wrong!");
             });
+
+
         }
     }
 }
