@@ -2,13 +2,13 @@
   Layout = "_Layout";
 }
 
-@model ToDoList.Models.Item
-<h4>Add a new task</h4>
+@model ToDoList.Models.Category
+<h4>Add a new category</h4>
 
 @using (Html.BeginForm())
 {
-    @Html.LabelFor(model => model.Description)
-    @Html.TextBoxFor(model => model.Description)
+    @Html.LabelFor(model => model.Name)
+    @Html.TextBoxFor(model => model.Name)
     <input type="submit" value="Add new task"/>
   
     
