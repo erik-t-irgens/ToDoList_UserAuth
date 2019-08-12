@@ -10,6 +10,10 @@
     @Html.LabelFor(model => model.Description)
     @Html.TextBoxFor(model => model.Description)
 
+    @Html.LabelFor(model => model.Deadline)
+    <input type="date" name="Deadline">
+    
+
     @Html.Label("Select category")
     @Html.DropDownList("CategoryId")
     <input type="submit" value="Add new item" class="btn btn-default"/>
