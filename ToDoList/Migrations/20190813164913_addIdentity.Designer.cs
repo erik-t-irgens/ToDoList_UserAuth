@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ToDoList.Models;
 
 namespace ToDoList.Migrations
 {
     [DbContext(typeof(ToDoListContext))]
-    partial class ToDoListContextModelSnapshot : ModelSnapshot
+    [Migration("20190813164913_addIdentity")]
+    partial class addIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -215,11 +217,7 @@ namespace ToDoList.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<string>("UserId");
-
                     b.HasKey("ItemId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Items");
                 });
@@ -280,13 +278,6 @@ namespace ToDoList.Migrations
                         .WithMany("Categories")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("ToDoList.Models.Item", b =>
-                {
-                    b.HasOne("ToDoList.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

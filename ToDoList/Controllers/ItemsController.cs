@@ -4,23 +4,31 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using ToDoList.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace ToDoList.Controllers
 {
+    [Authorize]
     public class ItemsController : Controller
     {
         private readonly ToDoListContext _db;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ItemsController(ToDoListContext db)
+        public ItemsController(UserManager<ApplicationUser> userManager, ToDoListContext db)
         {
+            _userManager = userManager;
             _db = db;
         }
 
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
+            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currentUser = await _userManager.FindByIdAsync(userId);
             return View(_db.Items
-            .OrderBy(items => items.Deadline)
-            .ToList());
+                .Where(x => x.User.Id == currentUser.Id).ToList());
         }
 
         public ActionResult Create()
@@ -29,13 +37,18 @@ namespace ToDoList.Controllers
             return View();
         }
 
+
+        // EDITTED THE LESSON'S EXAMPLE TO TRY AND KEEP IT WITH THE MANY-TO-MANY CONVENTION
         [HttpPost]
-        public ActionResult Create(Item item, int CategoryId)
+        public async Task<ActionResult> Create(Item item, int CategoryId)
         {
+            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currentUser = await _userManager.FindByIdAsync(userId);
+            item.User = currentUser;
             _db.Items.Add(item);
-            if (CategoryId !=0)
+            if (CategoryId != 0)
             {
-                _db.CategoryItem.Add(new CategoryItem() { CategoryId = CategoryId, ItemId = item.ItemId});
+                _db.CategoryItem.Add(new CategoryItem() { CategoryId = CategoryId, ItemId = item.ItemId });
 
             }
             _db.SaveChanges();
@@ -59,11 +72,11 @@ namespace ToDoList.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit (Item item, int CategoryId)
+        public ActionResult Edit(Item item, int CategoryId)
         {
-            if (CategoryId !=0)
+            if (CategoryId != 0)
             {
-                _db.CategoryItem.Add(new CategoryItem() { CategoryId = CategoryId, ItemId = item.ItemId});
+                _db.CategoryItem.Add(new CategoryItem() { CategoryId = CategoryId, ItemId = item.ItemId });
             }
             _db.Entry(item).State = EntityState.Modified;
             _db.SaveChanges();
